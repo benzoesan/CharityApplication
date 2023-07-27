@@ -125,8 +125,22 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$next.forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
-          this.currentStep++;
-          this.updateForm();
+          let isValid = true;
+
+          if (this.currentStep === 1) {
+            isValid = this.validateStep1(); // Wywołanie walidacji dla kroku 1
+          } else if (this.currentStep === 2) {
+            isValid = this.validateStep2(); // Wywołanie walidacji dla kroku 2
+          } else if (this.currentStep === 3) {
+            isValid = this.validateStep3(); // Wywołanie walidacji dla kroku 3
+          } else if (this.currentStep === 4) {
+            isValid = this.validateStep4(); // Wywołanie walidacji dla kroku 4
+          }
+
+          if (isValid) {
+            this.currentStep++;
+            this.updateForm();
+          }
         });
       });
 
@@ -151,6 +165,8 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.innerText = this.currentStep;
 
       // TODO: Validation
+
+
 
       // if (this.currentStep === 2) {
       //   const quantityInput = document.querySelector("#quantity");
@@ -185,6 +201,51 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // TODO: get data from inputs and show them in summary
       this.updateSummary();
+    }
+
+    validateStep1() {
+      const checkboxes = this.$form.querySelectorAll('input[name="categories"]:checked');
+      if (checkboxes.length === 0) {
+        alert("Proszę zaznaczyć co chcesz oddać.");
+        return false;
+      }
+      return true;
+    }
+    // Validation for Step 2: Podaj liczbę 60l worków
+    validateStep2() {
+      const quantityInput = this.$form.querySelector("#quantity");
+      const quantityValue = parseInt(quantityInput.value.trim());
+      if (isNaN(quantityValue) || quantityValue <= 0) {
+        alert("Proszę podać prawidłową liczbę 60-litrowych worków.");
+        return false;
+      }
+      return true;
+    }
+
+    // Validation for Step 3: Wybierz organizację, której chcesz pomóc
+    validateStep3() {
+      const radioButtons = this.$form.querySelectorAll('input[name="institution"]:checked');
+      if (radioButtons.length === 0) {
+        alert("Proszę wybrać organizację, której chcesz pomóc.");
+        return false;
+      }
+      return true;
+    }
+
+    // Validation for Step 4: Podaj adres oraz termin odbioru rzeczy przez kuriera
+    validateStep4() {
+      const streetInput = this.$form.querySelector("#street");
+      const cityInput = this.$form.querySelector("#city");
+      const zipCodeInput = this.$form.querySelector("#zipCode");
+      const pickUpDateInput = this.$form.querySelector("#pickUpDate");
+      const pickUpTimeInput = this.$form.querySelector("#pickUpTime");
+
+      if (!streetInput.value.trim() || !cityInput.value.trim() || !zipCodeInput.value.trim() || !pickUpDateInput.value.trim() || !pickUpTimeInput.value.trim()) {
+        alert("Proszę uzupełnić wszystkie pola w sekcji adresu i terminu odbioru.");
+        return false;
+      }
+
+      return true;
     }
     updateSummary() {
       // STEP 5: Update summary section with form data
