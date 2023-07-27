@@ -203,6 +203,27 @@ document.addEventListener("DOMContentLoaded", function() {
       this.updateSummary();
     }
 
+    displayErrorMessage(inputElement, errorMessage) {
+      // Check if an error message already exists for this input, if yes, remove it.
+      const existingErrorMessage = inputElement.nextElementSibling;
+      if (existingErrorMessage && existingErrorMessage.classList.contains("error-message")) {
+        existingErrorMessage.remove();
+      }
+
+      const errorMessageElement = document.createElement("span");
+      errorMessageElement.classList.add("error-message");
+      errorMessageElement.innerText = errorMessage;
+
+      inputElement.insertAdjacentElement("afterend", errorMessageElement);
+    }
+
+    removeErrorMessage(inputElement) {
+      const errorMessageElement = inputElement.nextElementSibling;
+      if (errorMessageElement && errorMessageElement.classList.contains("error-message")) {
+        errorMessageElement.remove();
+      }
+    }
+
     validateStep1() {
       const checkboxes = this.$form.querySelectorAll('input[name="categories"]:checked');
       if (checkboxes.length === 0) {
@@ -216,10 +237,12 @@ document.addEventListener("DOMContentLoaded", function() {
       const quantityInput = this.$form.querySelector("#quantity");
       const quantityValue = parseInt(quantityInput.value.trim());
       if (isNaN(quantityValue) || quantityValue <= 0) {
-        alert("Proszę podać prawidłową liczbę 60-litrowych worków.");
+        this.displayErrorMessage(quantityInput, "Proszę podać liczbę worków.");
         return false;
+      }else {
+        this.removeErrorMessage(quantityInput);
+        return true;
       }
-      return true;
     }
 
     // Validation for Step 3: Wybierz organizację, której chcesz pomóc
@@ -239,13 +262,69 @@ document.addEventListener("DOMContentLoaded", function() {
       const zipCodeInput = this.$form.querySelector("#zipCode");
       const pickUpDateInput = this.$form.querySelector("#pickUpDate");
       const pickUpTimeInput = this.$form.querySelector("#pickUpTime");
+      const phoneInput = this.$form.querySelector("#phone");
 
-      if (!streetInput.value.trim() || !cityInput.value.trim() || !zipCodeInput.value.trim() || !pickUpDateInput.value.trim() || !pickUpTimeInput.value.trim()) {
-        alert("Proszę uzupełnić wszystkie pola w sekcji adresu i terminu odbioru.");
-        return false;
+      let isValid = true;
+      if (!streetInput.value.trim()) {
+        this.displayErrorMessage(streetInput, "Proszę podać ulicę.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(streetInput);
+      }
+      if (!cityInput.value.trim()) {
+        this.displayErrorMessage(cityInput, "Proszę podać miasto.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(cityInput);
+      }
+// Validate zip code
+      const zipCodeValue = zipCodeInput.value.trim();
+      const zipCodeRegex = /^\d{2}-\d{3}$/;
+      if (!zipCodeValue) {
+        this.displayErrorMessage(zipCodeInput, "Proszę podać kod pocztowy.");
+        isValid = false;
+      } else if (!zipCodeRegex.test(zipCodeValue)) {
+        this.displayErrorMessage(zipCodeInput, "Kod pocztowy musi składać się z dokładnie 5 cyfr.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(zipCodeInput);
       }
 
-      return true;
+      if (!pickUpDateInput.value.trim()) {
+        this.displayErrorMessage(pickUpDateInput, "Proszę podać datę odbioru.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(pickUpDateInput);
+      }
+
+      if (!pickUpTimeInput.value.trim()) {
+        this.displayErrorMessage(pickUpTimeInput, "Proszę podać godzinę odbioru.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(pickUpTimeInput);
+      }
+
+      // Validate phone number
+      const phoneValue = phoneInput.value.trim();
+      const phoneRegex = /^\d{9}$/;
+      if (!phoneValue) {
+        this.displayErrorMessage(phoneInput, "Proszę podać numer telefonu.");
+        isValid = false;
+      } else if (!phoneRegex.test(phoneValue)) {
+        this.displayErrorMessage(phoneInput, "Numer telefonu musi składać się z dokładnie 9 cyfr.");
+        isValid = false;
+      } else {
+        this.removeErrorMessage(phoneInput);
+      }
+
+      return isValid;
+
+
+      // if (!streetInput.value.trim() || !cityInput.value.trim() || !zipCodeInput.value.trim() || !pickUpDateInput.value.trim() || !pickUpTimeInput.value.trim()) {
+      //   alert("Proszę uzupełnić wszystkie pola w sekcji adresu i terminu odbioru.");
+      //   return false;
+      // }
+      //return true;
     }
     updateSummary() {
       // STEP 5: Update summary section with form data

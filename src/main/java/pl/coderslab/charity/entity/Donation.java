@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
@@ -37,9 +38,7 @@ public class Donation {
     @Pattern(regexp = "^\\d{2}-\\d{3}$", message = "Invalid postal code format. Use XX-XXX format.")
     private String zipCode;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull
     private LocalDate pickUpDate;
-    @NotNull
     private LocalTime pickUpTime;
     @NotNull
     private String pickUpComment;
