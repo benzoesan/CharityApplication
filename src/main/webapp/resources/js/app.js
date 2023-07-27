@@ -152,6 +152,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // TODO: Validation
 
+      // if (this.currentStep === 2) {
+      //   const quantityInput = document.querySelector("#quantity");
+      //   const quantityValue = quantityInput.value.trim(); // Trim whitespace
+      //
+      //   if (!quantityValue) {
+      //     // If quantity is not provided, remove the error class and exit
+      //     quantityInput.classList.remove("error");
+      //     return;
+      //   }
+      //
+      //   // Check if quantityValue is a valid positive number
+      //   if (isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
+      //     // If quantity is not a positive number, show an error
+      //     quantityInput.classList.add("error");
+      //   } else {
+      //     // If the quantity is valid, remove the error class
+      //     quantityInput.classList.remove("error");
+      //   }
+      // }
+
       this.slides.forEach(slide => {
         slide.classList.remove("active");
 
@@ -164,6 +184,53 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 5;
 
       // TODO: get data from inputs and show them in summary
+      this.updateSummary();
+    }
+    updateSummary() {
+      // STEP 5: Update summary section with form data
+      if (this.currentStep === 5) {
+        const quantity = document.getElementById("summary-quantity");
+        const institution = document.getElementById("summary-institution");
+        const category = document.getElementById("summary-category");
+        const summaryStreet = document.getElementById("summary-street");
+        const summaryCity = document.getElementById("summary-city");
+        const zipCode = document.getElementById("summary-zipCode");
+        const pickUpDate = document.getElementById("summary-pickUpDate");
+        const pickUpTime = document.getElementById("summary-pickUpTime");
+        const pickUpComment = document.getElementById("summary-pickUpComment");
+
+        // Fetch data from input fields
+        const quantityValue = document.querySelector("#quantity").value;
+        const institutionElement = document.querySelector("[name=institution]:checked");
+        const categoryElements = document.querySelectorAll("[name=categories]:checked");
+        // Check if the institution element is found and get the title
+        //działa
+        const institutionValue =  institutionElement.parentElement.querySelector(".title").innerText;
+        const categoryValues = [];
+        categoryElements.forEach((checkbox) => {
+          categoryValues.push(checkbox.parentElement.querySelector(".description").innerText);
+        });
+
+        //const categoryValue =  categoryElement.parentElement.querySelector(".description").innerText;
+
+        const streetValue = document.querySelector("#street").value;
+        const cityValue = document.querySelector("#city").value;
+        const zipCodeValue = document.querySelector("#zipCode").value;
+        const pickUpDateValue = document.querySelector("#pickUpDate").value;
+        const pickUpTimeValue = document.querySelector("#pickUpTime").value;
+        const pickUpCommentValue = document.querySelector("textarea#pickUpComment").value;
+
+        // Update summary section with the fetched data
+        quantity.innerText = quantityValue;
+        institution.innerText = institutionValue;
+        category.innerText = categoryValues.join(", ");
+        summaryStreet.innerText = streetValue;
+        summaryCity.innerText = cityValue;
+        zipCode.innerText = zipCodeValue;
+        pickUpDate.innerText = pickUpDateValue;
+        pickUpTime.innerText = pickUpTimeValue;
+        pickUpComment.innerText = pickUpCommentValue;
+      }
     }
 
   }

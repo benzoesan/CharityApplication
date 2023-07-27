@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class Institution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
